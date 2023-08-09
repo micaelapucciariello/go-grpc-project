@@ -12,5 +12,14 @@ message CPU {
     uint32 threads = 4;
     double min_ghz = 5;
     double max_ghz = 6;
+}
+
+message GPU {
+    string brand = 1;
+    string name = 2;
+    uint32 cores = 3;
+    uint32 threads = 4;
+    double min_ghz = 5;
+    double max_ghz = 6;
     Memory memory = 7;
 }
