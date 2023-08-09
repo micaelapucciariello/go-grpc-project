@@ -1,2 +1,14 @@
 gen:
-	protoc --proto_path=proto proto/*.proto --go_out=plugins=grpc:pb
+	protoc --proto_path=./proto ./proto/*.proto --plugin=$(go env GOPATH)/bin/protoc-gen-go --go_out=./pb
+
+clean:
+	rm pb/*.go
+
+test:
+	go test -v ./...
+
+run:
+	go run main.go
+
+
+.PHONY: gen, clean, run, test
