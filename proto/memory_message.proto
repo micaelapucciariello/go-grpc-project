@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option go_package = "./";
+package pcbook;
+
+message Memory {
+    enum Unit {
+        UNKNOWN = 0;
+        BIT = 1;
+        BYTE = 2;
+        KBYTE = 3;
+        MBYTE = 4;
+        GBYTE = 5;
+        TBYTE = 6;
+    }
+    string value = 1;
+    Unit unit = 2;
+}
