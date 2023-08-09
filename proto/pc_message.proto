@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option go_package = "./";
+package pcbook;
+
+import "memory_message.proto";
+import "processor_message.proto";
+import "screen_message.proto";
+import "google/protobuf/timestamp.proto";
+
+message PC {
+    uint32 id = 1;
+    string brand = 2;
+    repeated Memory memory = 3;
+    CPU cpu = 4;
+    repeated GPU gpu = 5;
+    Screen screen = 6;
+    oneof Weight {
+        float kg_weight = 7;
+        float lb_weight = 8;
+    };
+    double usd_price = 9;
+    uint32 release_year = 10;
+    google.protobuf.Timestamp updated_at = 11;
+}
