@@ -9,6 +9,13 @@ func RandomCPUBrand() string {
 	)
 }
 
+func RandomGPUBrand() string {
+	return randomStringFromSet(
+		"NVIDIA",
+		"AMD",
+	)
+}
+
 func RandomCPUName(brand string) string {
 	if brand == "Intel" {
 		return randomStringFromSet(
