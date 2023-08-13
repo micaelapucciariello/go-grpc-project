@@ -5,7 +5,7 @@ clean:
 	rm pb/*.go
 
 test:
-	go test -v ./...
+	go test -v -cover -race ./...
 
 run:
 	go run main.go

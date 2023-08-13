@@ -6,20 +6,22 @@ package pcbook;
 import "memory_message.proto";
 import "processor_message.proto";
 import "screen_message.proto";
+import "storage_message.proto";
 import "google/protobuf/timestamp.proto";
 
 message PC {
-    uint32 id = 1;
+    string id = 1;
     string brand = 2;
     repeated Memory memory = 3;
     CPU cpu = 4;
     repeated GPU gpu = 5;
     Screen screen = 6;
+    repeated Storage storage = 7;
     oneof Weight {
-        float kg_weight = 7;
-        float lb_weight = 8;
+        float kg_weight = 8;
+        float lb_weight = 9;
     };
-    double usd_price = 9;
-    uint32 release_year = 10;
-    google.protobuf.Timestamp updated_at = 11;
+    double usd_price = 10;
+    uint32 release_year = 11;
+    google.protobuf.Timestamp updated_at = 12;
 }

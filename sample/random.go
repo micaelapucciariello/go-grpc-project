@@ -9,6 +9,14 @@ func RandomCPUBrand() string {
 	)
 }
 
+func RandomPCBrand() string {
+	return randomStringFromSet(
+		"Apple",
+		"Dell",
+		"Acer",
+	)
+}
+
 func RandomGPUBrand() string {
 	return randomStringFromSet(
 		"NVIDIA",
@@ -34,7 +42,7 @@ func RandomCPUName(brand string) string {
 }
 
 func RandomInt(min, max int) int {
-	return min + rand.Intn(min-max+1)
+	return min + rand.Intn(max-min+1)
 }
 
 func RandomFloat64(min, max float64) float64 {

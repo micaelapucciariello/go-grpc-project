@@ -1,6 +1,17 @@
 package sample
 
-import "github.com/micaelapucciariello/grpc-project/pb"
+import (
+	"github.com/golang/protobuf/ptypes"
+	"github.com/google/uuid"
+	"github.com/micaelapucciariello/grpc-project/pb"
+	"math/rand"
+	"time"
+)
+
+// to generate different set of random items in each test run
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
 
 func NewCPU() *pb.CPU {
 	brand := RandomCPUBrand()
@@ -44,8 +55,8 @@ func NewGPU() *pb.GPU {
 
 func NewMemory() *pb.Memory {
 	return &pb.Memory{
-		Value: "",
-		Unit:  pb.Memory_Unit(RandomInt(0, 2)),
+		Value: "64",
+		Unit:  pb.Memory_GBYTE,
 	}
 }
 
@@ -67,14 +78,30 @@ func NewHDD() *pb.Storage {
 
 func NewScreen() *pb.Screen {
 	width := RandomInt(1024, 4320)
-	heigth := width * (9 / 16)
+	height := width * (9 / 16)
 	return &pb.Screen{
 		SizeInch: float32(RandomInt(10, 24)),
 		Resolution: &pb.Screen_Resolution{
 			Width:  uint32(width),
-			Height: uint32(heigth),
+			Height: uint32(height),
 		},
 		Panel:      0,
 		Multitouch: RandomBool(),
+	}
+}
+
+func NewPC() *pb.PC {
+	return &pb.PC{
+		Id:          uuid.New().String(),
+		Brand:       RandomPCBrand(),
+		Memory:      []*pb.Memory{NewMemory()},
+		Cpu:         NewCPU(),
+		Gpu:         []*pb.GPU{NewGPU()},
+		Screen:      NewScreen(),
+		Storage:     []*pb.Storage{NewHDD(), NewSSD()},
+		Weight:      &pb.PC_KgWeight{KgWeight: float32(RandomFloat64(0.5, 3))},
+		UsdPrice:    RandomFloat64(300, 2000),
+		ReleaseYear: uint32(RandomInt(2018, 2023)),
+		UpdatedAt:   ptypes.TimestampNow(),
 	}
 }
