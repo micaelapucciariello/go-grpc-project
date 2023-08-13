@@ -1,11 +1,11 @@
 gen:
-	protoc --proto_path=./proto ./proto/*.proto --plugin=$(go env GOPATH)/bin/protoc-gen-go --go_out=./pb
+	protoc --proto_path=./proto ./proto/*.proto --plugin=$(go env GOPATH)/bin/protoc-gen-go --go_out=./
 
 clean:
 	rm pb/*.go
 
 test:
-	go test -v ./...
+	go test -v -cover -race ./...
 
 run:
 	go run main.go

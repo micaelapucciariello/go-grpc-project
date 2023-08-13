@@ -1,0 +1,58 @@
+{
+	"id": "1a915ef8-c9e4-4e7b-9517-d16d4e907562",
+	"brand": "Dell",
+	"memory": [
+		{
+			"value": "64",
+			"unit": "GBYTE"
+		}
+	],
+	"cpu": {
+		"brand": "AMD",
+		"name": "rizen-3-PRO",
+		"cores": 5,
+		"threads": 11,
+		"min_ghz": 2.465198224691008,
+		"max_ghz": 3.910716278393534
+	},
+	"gpu": [
+		{
+			"brand": "NVIDIA",
+			"name": "NVIDIA",
+			"cores": 3,
+			"threads": 4,
+			"min_ghz": 1.3054905882939434,
+			"max_ghz": 1.5136363779335384,
+			"memory": {
+				"value": "64",
+				"unit": "GBYTE"
+			}
+		}
+	],
+	"screen": {
+		"size_inch": 21,
+		"resolution": {
+			"width": 3016
+		}
+	},
+	"storage": [
+		{
+			"driver": "HDD",
+			"memory": {
+				"value": "64",
+				"unit": "GBYTE"
+			}
+		},
+		{
+			"driver": "SSD",
+			"memory": {
+				"value": "64",
+				"unit": "GBYTE"
+			}
+		}
+	],
+	"kg_weight": 2.4519544,
+	"usd_price": 1092.1420209613282,
+	"release_year": 2022,
+	"updated_at": "2023-08-13T21:06:42.488759Z"
+}
