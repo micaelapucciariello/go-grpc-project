@@ -25,7 +25,7 @@ func (store *InMemoryPCStore) Save(pc *pb.PC) error {
 	store.mutex.Lock()
 	defer store.mutex.Unlock()
 
-	if store.data[pc.Id] == nil {
+	if store.data[pc.Id] != nil {
 		return ErrAlreadyExists
 	}
 

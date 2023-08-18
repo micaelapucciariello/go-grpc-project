@@ -14,21 +14,22 @@ type PCServer struct {
 	Store PCStore
 }
 
-func NewPCServer() *PCServer {
-	return &PCServer{}
+func NewPCServer(s PCStore) *PCServer {
+	return &PCServer{
+		Store: s,
+	}
 }
 
 func (server *PCServer) CreatePC(ctx context.Context, req *pb.CreatePCRequest) (*pb.CreatePCResponse, error) {
 	pc := req.GetPc()
 	log.Printf("create pc request with id: %v", pc.Id)
 
-	if len(pc.Id) > 0 {
-		_, err := uuid.Parse(pc.Id)
-		if err != nil {
-			return nil, status.Errorf(codes.InvalidArgument, "invalid pc uuid: %s", pc.Id)
-		} else {
-			pc.Id = uuid.New().String()
-		}
+	if len(pc.Id) == 0 {
+		pc.Id = uuid.New().String()
+	}
+
+	if _, err := uuid.Parse(pc.Id); err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid pc uuid: %s", pc.Id)
 	}
 
 	err := server.Store.Save(pc)
