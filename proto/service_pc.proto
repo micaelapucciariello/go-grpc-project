@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option go_package = "./pb";
+package pcbook;
+
+
+import "google/api/annotations.proto";
+import "pc_message.proto";
+
+message CreatePCRequest {
+  PC pc = 1;
+}
+
+message CreatePCResponse {
+  string id = 1;
+}
+
+service PCService {
+  rpc CreatePC(CreatePCRequest) returns (CreatePCResponse) {
+    option (google.api.http) = {
+      post: "/v1/create_pc"
+      body: "*"
+    };
+  };
+}

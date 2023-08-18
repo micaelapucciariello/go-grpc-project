@@ -1,5 +1,5 @@
 gen:
-	protoc --proto_path=./proto ./proto/*.proto --plugin=$(go env GOPATH)/bin/protoc-gen-go --go_out=./
+	protoc --proto_path=./proto ./proto/*.proto --plugin=$(go env GOPATH)/bin/protoc-gen-go --go_out=./ --go-grpc_out=.
 
 clean:
 	rm pb/*.go
