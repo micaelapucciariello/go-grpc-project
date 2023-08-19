@@ -1,9 +1,10 @@
-package service
+package service_test
 
 import (
 	"context"
 	"github.com/micaelapucciariello/grpc-project/pb"
 	"github.com/micaelapucciariello/grpc-project/sample"
+	"github.com/micaelapucciariello/grpc-project/service"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
@@ -21,32 +22,32 @@ func TestPCServer_CreatePC(t *testing.T) {
 	PCWithInvalidID.Id = "no_valid_id"
 
 	duplicatedPC := sample.NewPC()
-	duplicatedStore := NewInMemoryPCStore()
+	duplicatedStore := service.NewInMemoryPCStore()
 	err := duplicatedStore.Save(duplicatedPC)
 	assert.NoError(t, err)
 
 	testCases := []struct {
 		name  string
 		pc    *pb.PC
-		store *InMemoryPCStore
+		store *service.InMemoryPCStore
 		code  codes.Code
 	}{
 		{
 			name:  "success_with_id",
 			pc:    sample.NewPC(),
-			store: NewInMemoryPCStore(),
+			store: service.NewInMemoryPCStore(),
 			code:  codes.OK,
 		},
 		{
 			name:  "success_without_id",
 			pc:    PCWithoutID,
-			store: NewInMemoryPCStore(),
+			store: service.NewInMemoryPCStore(),
 			code:  codes.OK,
 		},
 		{
 			name:  "error_invalid_id",
 			pc:    PCWithInvalidID,
-			store: NewInMemoryPCStore(),
+			store: service.NewInMemoryPCStore(),
 			code:  codes.InvalidArgument,
 		},
 		{
@@ -65,7 +66,7 @@ func TestPCServer_CreatePC(t *testing.T) {
 			t.Parallel()
 			req := &pb.CreatePCRequest{Pc: tc.pc}
 
-			server := NewPCServer(tc.store)
+			server := service.New(tc.store)
 			pc, err := server.CreatePC(ctx, req)
 			if tc.code == codes.OK {
 				require.NoError(t, err)
