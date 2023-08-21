@@ -7,8 +7,11 @@ clean:
 test:
 	go test -v -cover -race ./...
 
-run:
-	go run main.go
+server:
+	go run /cmd/server/main.go
+
+client:
+	go run /cmd/client/main.go
 
 
-.PHONY: gen, clean, run, test
+.PHONY: gen, clean, server, client, test

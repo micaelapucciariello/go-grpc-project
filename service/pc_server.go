@@ -14,7 +14,7 @@ type PCServer struct {
 	Store PCStore
 }
 
-func NewPCServer(s PCStore) *PCServer {
+func New(s PCStore) *PCServer {
 	return &PCServer{
 		Store: s,
 	}
@@ -43,4 +43,9 @@ func (server *PCServer) CreatePC(ctx context.Context, req *pb.CreatePCRequest) (
 	res := &pb.CreatePCResponse{Id: pc.Id}
 
 	return res, nil
+}
+
+// mustEmbedUnimplementedPCServiceServer implements pb.PCServiceServer.
+func (*PCServer) mustEmbedUnimplementedPCServiceServer() {
+	panic("unimplemented")
 }

@@ -14,5 +14,5 @@ run `go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest` `export PA
 #### linter
 run `go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest`
 
-#### pre_commit
+#### pre-commit
 run `pip install pre-commit` `pre-commit install`
