@@ -13,9 +13,13 @@ import (
 )
 
 func main() {
-	serverAddress := flag.String("address", "", "server address")
+	serverAddress := flag.String("address", "0.0.0.0:8080", "server address")
+	if *serverAddress == "" || &serverAddress == nil {
+		log.Fatal("invalid address")
+		return
+	}
 	flag.Parse()
-	log.Printf("dial server on server address: %d", serverAddress)
+	log.Printf("dial server on server address: %s", *serverAddress)
 
 	conn, err := grpc.Dial(*serverAddress, grpc.WithInsecure())
 	if err != nil {
