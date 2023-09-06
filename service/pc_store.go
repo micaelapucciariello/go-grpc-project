@@ -10,7 +10,7 @@ import (
 type PCStore interface {
 	Save(pc *pb.PC) error
 	Find(id string) (*pb.PC, error)
-	Search(filter pb.Filter, found func(pc *pb.PC) error) error
+	Search(filter *pb.Filter, found func(pc *pb.PC) error) error
 }
 
 type InMemoryPCStore struct {
