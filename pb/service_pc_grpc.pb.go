@@ -23,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PCServiceClient interface {
 	CreatePC(ctx context.Context, in *CreatePCRequest, opts ...grpc.CallOption) (*CreatePCResponse, error)
-	SearchPC(ctx context.Context, in *SearchPCRequest, opts ...grpc.CallOption) (*SearchPCResponse, error)
+	SearchPC(ctx context.Context, in *SearchPCRequest, opts ...grpc.CallOption) (PCService_SearchPCClient, error)
 }
 
 type pCServiceClient struct {
@@ -43,13 +43,36 @@ func (c *pCServiceClient) CreatePC(ctx context.Context, in *CreatePCRequest, opt
 	return out, nil
 }
 
-func (c *pCServiceClient) SearchPC(ctx context.Context, in *SearchPCRequest, opts ...grpc.CallOption) (*SearchPCResponse, error) {
-	out := new(SearchPCResponse)
-	err := c.cc.Invoke(ctx, "/pcbook.PCService/SearchPC", in, out, opts...)
+func (c *pCServiceClient) SearchPC(ctx context.Context, in *SearchPCRequest, opts ...grpc.CallOption) (PCService_SearchPCClient, error) {
+	stream, err := c.cc.NewStream(ctx, &PCService_ServiceDesc.Streams[0], "/pcbook.PCService/SearchPC", opts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &pCServiceSearchPCClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type PCService_SearchPCClient interface {
+	Recv() (*SearchPCResponse, error)
+	grpc.ClientStream
+}
+
+type pCServiceSearchPCClient struct {
+	grpc.ClientStream
+}
+
+func (x *pCServiceSearchPCClient) Recv() (*SearchPCResponse, error) {
+	m := new(SearchPCResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 // PCServiceServer is the server API for PCService service.
@@ -57,7 +80,7 @@ func (c *pCServiceClient) SearchPC(ctx context.Context, in *SearchPCRequest, opt
 // for forward compatibility
 type PCServiceServer interface {
 	CreatePC(context.Context, *CreatePCRequest) (*CreatePCResponse, error)
-	SearchPC(context.Context, *SearchPCRequest) (*SearchPCResponse, error)
+	SearchPC(*SearchPCRequest, PCService_SearchPCServer) error
 	mustEmbedUnimplementedPCServiceServer()
 }
 
@@ -68,8 +91,8 @@ type UnimplementedPCServiceServer struct {
 func (UnimplementedPCServiceServer) CreatePC(context.Context, *CreatePCRequest) (*CreatePCResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreatePC not implemented")
 }
-func (UnimplementedPCServiceServer) SearchPC(context.Context, *SearchPCRequest) (*SearchPCResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SearchPC not implemented")
+func (UnimplementedPCServiceServer) SearchPC(*SearchPCRequest, PCService_SearchPCServer) error {
+	return status.Errorf(codes.Unimplemented, "method SearchPC not implemented")
 }
 func (UnimplementedPCServiceServer) mustEmbedUnimplementedPCServiceServer() {}
 
@@ -102,22 +125,25 @@ func _PCService_CreatePC_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PCService_SearchPC_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SearchPCRequest)
-	if err := dec(in); err != nil {
-		return nil, err
+func _PCService_SearchPC_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(SearchPCRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
 	}
-	if interceptor == nil {
-		return srv.(PCServiceServer).SearchPC(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pcbook.PCService/SearchPC",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PCServiceServer).SearchPC(ctx, req.(*SearchPCRequest))
-	}
-	return interceptor(ctx, in, info, handler)
+	return srv.(PCServiceServer).SearchPC(m, &pCServiceSearchPCServer{stream})
+}
+
+type PCService_SearchPCServer interface {
+	Send(*SearchPCResponse) error
+	grpc.ServerStream
+}
+
+type pCServiceSearchPCServer struct {
+	grpc.ServerStream
+}
+
+func (x *pCServiceSearchPCServer) Send(m *SearchPCResponse) error {
+	return x.ServerStream.SendMsg(m)
 }
 
 // PCService_ServiceDesc is the grpc.ServiceDesc for PCService service.
@@ -131,11 +157,13 @@ var PCService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "CreatePC",
 			Handler:    _PCService_CreatePC_Handler,
 		},
+	},
+	Streams: []grpc.StreamDesc{
 		{
-			MethodName: "SearchPC",
-			Handler:    _PCService_SearchPC_Handler,
+			StreamName:    "SearchPC",
+			Handler:       _PCService_SearchPC_Handler,
+			ServerStreams: true,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
 	Metadata: "service_pc.proto",
 }

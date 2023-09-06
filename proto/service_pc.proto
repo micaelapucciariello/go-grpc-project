@@ -32,7 +32,7 @@ service PCService {
     };
   };
 
-  rpc SearchPC(SearchPCRequest) returns (SearchPCResponse) {
+  rpc SearchPC(SearchPCRequest) returns (stream SearchPCResponse) {
     option (google.api.http) = {
       post: "/v1/create_pc"
       body: "*"
