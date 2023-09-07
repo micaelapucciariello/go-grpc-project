@@ -45,7 +45,26 @@ func (server *PCServer) CreatePC(ctx context.Context, req *pb.CreatePCRequest) (
 	return res, nil
 }
 
+func (server *PCServer) SearchPC(req *pb.SearchPCRequest, stream pb.PCService_SearchPCServer) error {
+	filter := req.GetFilter()
+	err := server.Store.Search(filter, func(pc *pb.PC) error {
+		res := &pb.SearchPCResponse{Pc: pc}
+		err := stream.Send(res)
+		if err != nil {
+			return err
+		}
+		log.Printf("sent pc with id: %v", pc.Id)
+		return nil
+	},
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // mustEmbedUnimplementedPCServiceServer implements pb.PCServiceServer.
-func (*PCServer) mustEmbedUnimplementedPCServiceServer() {
+func (server *PCServer) mustEmbedUnimplementedPCServiceServer() {
 	panic("unimplemented")
 }
