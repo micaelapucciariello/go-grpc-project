@@ -1,8 +1,11 @@
 package service
 
 import (
+	"context"
+	"errors"
 	"github.com/jinzhu/copier"
 	"github.com/micaelapucciariello/grpc-project/pb"
+	"log"
 	"strconv"
 	"sync"
 )
@@ -10,7 +13,7 @@ import (
 type PCStore interface {
 	Save(pc *pb.PC) error
 	Find(id string) (*pb.PC, error)
-	Search(filter *pb.Filter, found func(pc *pb.PC) error) error
+	Search(ctx context.Context, filter *pb.Filter, found func(pc *pb.PC) error) error
 }
 
 type InMemoryPCStore struct {
@@ -53,7 +56,7 @@ func (store *InMemoryPCStore) Find(id string) (*pb.PC, error) {
 	return deepCopy(pc)
 }
 
-func (store *InMemoryPCStore) Search(filter *pb.Filter, found func(pc *pb.PC) error) error {
+func (store *InMemoryPCStore) Search(ctx context.Context, filter *pb.Filter, found func(pc *pb.PC) error) error {
 	store.mutex.Lock()
 	defer store.mutex.Unlock()
 
@@ -68,6 +71,11 @@ func (store *InMemoryPCStore) Search(filter *pb.Filter, found func(pc *pb.PC) er
 			if err != nil {
 				return err
 			}
+		}
+
+		if ctx.Err() == context.Canceled || ctx.Err() == context.DeadlineExceeded {
+			log.Print("context is cancelled")
+			return errors.New("context is cancelled")
 		}
 	}
 

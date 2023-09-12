@@ -47,7 +47,7 @@ func (server *PCServer) CreatePC(ctx context.Context, req *pb.CreatePCRequest) (
 
 func (server *PCServer) SearchPC(req *pb.SearchPCRequest, stream pb.PCService_SearchPCServer) error {
 	filter := req.GetFilter()
-	err := server.Store.Search(filter, func(pc *pb.PC) error {
+	err := server.Store.Search(stream.Context(), filter, func(pc *pb.PC) error {
 		res := &pb.SearchPCResponse{Pc: pc}
 		err := stream.Send(res)
 		if err != nil {

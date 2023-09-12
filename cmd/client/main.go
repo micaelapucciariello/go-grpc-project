@@ -90,5 +90,4 @@ func main() {
 	}
 
 	searchPC(pcClient, filter)
-
 }
